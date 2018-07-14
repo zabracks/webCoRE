@@ -1,0 +1,39 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {},
+    "rules": {
+        "no-import-side-effect": true,
+        "member-access": [
+            true,
+            "check-accessor",
+            "check-constructor",
+            "check-parameter-property"
+        ],
+        "unified-signatures": true,
+        "no-conditional-assignment": true,
+        "switch-default": true,
+        "cyclomatic-complexity": [true, 20],
+        "eofline": true,
+        "indent": [true, "spaces", 4],
+        "linebreak-style": [true, "LF"],
+        "max-file-line-count": [true, 300],
+        "prefer-readonly": true,
+        "align": [true,
+            "parameters",
+            "statements"
+        ],
+        "array-type": [true, "generic"],
+        "arrow-parens": [true, "ban-single-arg-parens"],
+
+        "interface-name": false,
+        "ordered-imports": false,
+        "member-ordering": false,
+        "max-line-length": false,
+        "object-literal-sort-keys": false,
+        "object-literal-key-quotes": false
+    },
+    "rulesDirectory": []
+}

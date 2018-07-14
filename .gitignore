@@ -16,3 +16,9 @@ dashboard/js/components/fa*
 # Mac Hidden Files   #
 ######################
 .DS_Store
+
+# Project files
+.vs/
+.vscode/
+
+node_modules/

@@ -938,7 +938,8 @@ private api_get_base_result(deviceVersion = 0, updateCache = false) {
         name: location.name + ' \\ ' + (app.label ?: app.name),
         instance: [
 	    	account: [id: hashId(hubUID ?: app.getAccountId(), updateCache)],
-        	pistons: getChildApps().findAll{ it.name == name }.sort{ it.label }.collect{ [ id: hashId(it.id, updateCache), 'name': it.label, 'meta': state[hashId(it.id, updateCache)] ] },
+        	pistons: getChildApps().findAll{ it.name == name }.sort{ it.label }.collect { 
+				[ id: hashId(it.id, updateCache), 'name': it.label, 'meta': state[hashId(it.id, updateCache)] ] },
             id: hashId(app.id, updateCache),
             locationId: hashId(location.id, updateCache),
             name: app.label ?: app.name,
@@ -953,8 +954,18 @@ private api_get_base_result(deviceVersion = 0, updateCache = false) {
         ] + (sendDevices ? [contacts: listAvailableContacts(false, updateCache), devices: listAvailableDevices(false, updateCache)] : [:]),
         location: [
             contactBookEnabled: location.getContactBookEnabled(),
-            hubs: location.getHubs().collect{ [id: hashId(it.id, updateCache), name: it.name, firmware: hubUID ? 'unknown' : it.getFirmwareVersionString(), physical: it.getType().toString().contains('PHYSICAL'), powerSource: it.isBatteryInUse() ? 'battery' : 'mains' ]},
-            incidents: hubUID ? [] : location.activeIncidents.collect{[date: it.date.time, title: it.getTitle(), message: it.getMessage(), args: it.getMessageArgs(), sourceType: it.getSourceType()]}.findAll{ it.date >= incidentThreshold },
+            hubs: location.getHubs().collect{ [
+				id: hashId(it.id, updateCache), 
+				name: it.name, 
+				firmware: hubUID ? 'unknown' : it.getFirmwareVersionString(), 
+				physical: it.getType().toString().contains('PHYSICAL'), 
+				powerSource: it.isBatteryInUse() ? 'battery' : 'mains' ]},
+            incidents: hubUID ? [] : location.activeIncidents.collect{[
+				date: it.date.time, 
+				title: it.getTitle(), 
+				message: it.getMessage(), 
+				args: it.getMessageArgs(), 
+				sourceType: it.getSourceType()]}.findAll{ it.date >= incidentThreshold },
             id: hashId(location.id, updateCache),
             mode: hashId(location.getCurrentMode().id, updateCache),
             modes: location.getModes().collect{ [id: hashId(it.id, updateCache), name: it.name ]},
