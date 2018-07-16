@@ -1,7 +1,7 @@
 import { Dispatch, Middleware, MiddlewareAPI } from "redux";
 import * as Option from "webcore/utils/option";
 import { isNone } from "webcore/utils/option";
-import { ActionCreators, AppAction, match, matchAsync } from "../actions";
+import { ActionCreators, AppAction } from "../actions";
 import { ApplicationState } from "../store";
 
 import SmartappApiClient from "smartapp-api/SmartappApiClient";

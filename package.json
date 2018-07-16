@@ -62,6 +62,7 @@
     "redux-persist": "^5.10.0",
     "sjcl": "^1.0.7",
     "tsmonad": "^0.8.0",
-    "typeface-roboto": "0.0.54"
+    "typeface-roboto": "0.0.54",
+    "typescript-pattern-match": "^0.1.0"
   }
 }

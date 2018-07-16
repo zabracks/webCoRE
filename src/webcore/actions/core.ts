@@ -73,7 +73,6 @@ export namespace Action {
     type IsRequest<T> = T extends RequestAction<infer TT, infer TP, infer TReq, infer TRes> ? RequestAction<TT, TP, TReq, TRes> : never;
     type IsResponse<T> = T extends IsRequest<T> ? ReturnType<T["response"]> : never;
     export type IsAsync<T> = IsRequest<T> | IsResponse<T>;
-
     export type ActionUnion<T extends ActionCreatorDirectory> =
         | BaseActionUnion<T>
         | IsResponse<BaseActionUnion<T>>;
