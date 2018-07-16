@@ -1,4 +1,4 @@
-import { ApplicationState } from "webcore/store";
+import { ApplicationState } from ".";
 import { None } from "../utils/option";
 
 const defaultState: ApplicationState = {

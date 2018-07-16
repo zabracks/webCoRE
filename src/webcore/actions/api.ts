@@ -1,4 +1,4 @@
-import { Action } from "webcore/actions/core";
+import { Action } from "./core";
 import { ErrorResult } from "smartapp-api/results";
 import { AuthenticationApiResult, RawResponse, BaseApiResponse } from "smartapp-api/models";
 

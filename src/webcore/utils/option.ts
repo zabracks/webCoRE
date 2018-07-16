@@ -17,12 +17,12 @@ export const None: None = { case: "none" };
 
 export const isSome = <T>(opt: Option<T>): opt is Some<T> => {
     const casted = opt as Some<T>;
-    return casted.case === "some" && casted.val !== undefined;
+    return casted && casted.case === "some" && casted.val !== undefined;
 };
 
 export const isNone = <T>(opt: Option<T>): opt is None => {
     const casted = opt as None;
-    return casted.case !== undefined && casted.case === "none";
+    return casted && casted.case !== undefined && casted.case === "none";
 };
 
 export const bind = <T, U>(opt: Option<T>, f: (src: T) => Option<U>): Option<U> =>

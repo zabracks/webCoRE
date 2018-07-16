@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { ApplicationState } from "webcore/store";
+import { ApplicationState } from "../store";
 import { ActionCreators } from ".";
 
 // tslint:disable-next-line:no-namespace
@@ -70,8 +70,8 @@ export namespace Action {
         // doThing: (b: string) => bindAsync<{ x: number }>(create("sup", { a: b })),
     };
     type TestAction = BaseActionUnion<typeof a>;
-    type IsRequest<T> = T extends RequestAction<infer TT, infer TP, infer TReq, infer TRes> ? RequestAction<TT, TP, TReq, TRes> : never;
-    type IsResponse<T> = T extends IsRequest<T> ? ReturnType<T["response"]> : never;
+    export type IsRequest<T> = T extends RequestAction<infer TT, infer TP, infer TReq, infer TRes> ? RequestAction<TT, TP, TReq, TRes> : never;
+    export type IsResponse<T> = T extends IsRequest<T> ? ReturnType<T["response"]> : never;
     export type IsAsync<T> = IsRequest<T> | IsResponse<T>;
     export type ActionUnion<T extends ActionCreatorDirectory> =
         | BaseActionUnion<T>

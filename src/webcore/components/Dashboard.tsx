@@ -1,12 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { AppAction, ActionCreators } from "webcore/actions";
-import { ApplicationState } from "webcore/store";
+import { AppAction, ActionCreators } from "../actions";
+import { ApplicationState } from "../store";
 
 import { Route, RouteComponentProps, withRouter, Switch, Redirect } from "react-router";
 import { Dispatch } from "redux";
 import RegistrationHandler from "./RegistrationHandler";
-import { isNone, isSome } from "webcore/utils/option";
+import { isNone, isSome } from "../utils/option";
 import LoadingOverlay from "./LoadingOverlay";
 
 const mapState = (state: ApplicationState) => ({

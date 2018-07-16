@@ -12,11 +12,11 @@ import { AnyAction, applyMiddleware, createStore, Reducer, StoreEnhancer } from 
 import * as Persist from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import storage from "redux-persist/lib/storage";
-import Application from "webcore/components/Application";
-import { ActionLogMiddleware } from "webcore/middleware/ActionLogMiddleware";
-import { ApiRelayMiddleware } from "webcore/middleware/ApiRelayMiddleware";
-import { reducers } from "webcore/reducers";
-import { ApplicationState } from "webcore/store";
+import Application from "./components/Application";
+import { ActionLogMiddleware } from "./middleware/ActionLogMiddleware";
+import { ApiRelayMiddleware } from "./middleware/ApiRelayMiddleware";
+import { reducers } from "./reducers";
+import { ApplicationState } from "./store";
 
 const history = createHistory();
 

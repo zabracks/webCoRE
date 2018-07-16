@@ -1,8 +1,8 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { AppAction } from "webcore/actions";
-import { ApplicationState } from "webcore/store";
+import { AppAction } from "../actions";
+import { ApplicationState } from "../store";
 
 const mapState = (state: ApplicationState) => ({
 });

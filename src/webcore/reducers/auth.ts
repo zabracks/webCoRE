@@ -1,8 +1,7 @@
-import { reduce } from "webcore/reducers/core";
-import defaults from "webcore/store/defaults";
-import { some, None } from "webcore/utils/option";
-import { extractInstanceUri } from "webcore/utils/legacy";
-import { DEFAULT_ECDH_CURVE } from "tls";
+import { reduce } from "./core";
+import defaults from "../store/defaults";
+import { some, None } from "../utils/option";
+import { extractInstanceUri } from "../utils/legacy";
 
 function atou(str: string) {
     return decodeURIComponent(escape(window.atob(str)));

@@ -2,9 +2,9 @@ import { Button, DialogActions, DialogContent, DialogContentText, TextField } fr
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { AppAction, ActionCreators } from "webcore/actions";
-import { ModalWindow } from "webcore/components/ModalWindow";
-import { ApplicationState } from "webcore/store";
+import { AppAction, ActionCreators } from "../actions";
+import { ModalWindow } from "./ModalWindow";
+import { ApplicationState } from "../store";
 import { isSome, get } from "../utils/option";
 import { Redirect } from "react-router";
 

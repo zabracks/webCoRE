@@ -1,6 +1,6 @@
 
 import * as fetchJsonp from "fetch-jsonp";
-import { ApiResult, ErrorResult, SuccessResult } from "smartapp-api/results";
+import { ApiResult, ErrorResult, SuccessResult } from "./results";
 import { ApiErrorResult, ApplicationLoadRequest, AuthenticateRequestParams, AuthenticationApiResult, BaseApiResponse, RawResponse } from "./models";
 import * as md5 from 'md5';
 

@@ -2,9 +2,9 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Redirect, Route, RouteComponentProps, Switch, withRouter } from "react-router";
 import { Dispatch } from "redux";
-import { AppAction } from "webcore/actions";
-import Dashboard from "webcore/components/Dashboard";
-import { ApplicationState } from "webcore/store";
+import { AppAction } from "../actions";
+import Dashboard from "./Dashboard";
+import { ApplicationState } from "../store";
 
 const mapState = (state: ApplicationState) => ({
     currentPath: window.location.pathname,

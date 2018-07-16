@@ -1,7 +1,7 @@
-import { Either } from "tsmonad";
-import { Option } from "webcore/utils/option";
+import { Either } from "tsmonad/lib/src";
+import { Option } from "../utils/option";
 import * as ApiModels from "smartapp-api/models";
-import { AppAction } from "webcore/actions";
+import { AppAction } from "../actions";
 
 export interface AuthStatus {
     token: Option<string>;

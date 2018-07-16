@@ -1,6 +1,6 @@
 import { Dispatch, Middleware, MiddlewareAPI } from "redux";
-import * as Option from "webcore/utils/option";
-import { isNone } from "webcore/utils/option";
+import * as Option from "../utils/option";
+import { isNone } from "../utils/option";
 import { ActionCreators, AppAction } from "../actions";
 import { ApplicationState } from "../store";
 

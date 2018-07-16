@@ -1,4 +1,4 @@
-import { Action } from "webcore/actions/core";
+import { Action } from "./core";
 
 export default {
     registrationCodeChange: (code: string) => Action.create("UI/auth/set-registration-code", { code }),

@@ -1,6 +1,5 @@
-import { reduce } from "webcore/reducers/core";
-import defaults from "webcore/store/defaults";
-import { some } from "../utils/option";
+import { reduce } from "./core";
+import defaults from "../store/defaults";
 
 export default reduce(defaults.async, (state, init, mutate) => ({
     "ASYNC/request": a => mutate({

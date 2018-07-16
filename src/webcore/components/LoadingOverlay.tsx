@@ -1,7 +1,7 @@
 import * as React from "react";
-import * as Color from "webcore/utils/Color";
+import * as Color from "../utils/Color";
 import Overlay from "./Overlay";
-import { WithStyles, createStyles, withStyles } from "../../../node_modules/@material-ui/core";
+import { WithStyles, createStyles, withStyles } from "@material-ui/core";
 
 interface LoadingOverlayProps {}
 
