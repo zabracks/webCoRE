@@ -1,24 +1,29 @@
 import { ActionCase, ActionType, AppAction } from "webcore/actions";
 import { ApplicationState } from "webcore/store";
 
-type DeepPartial<T> = {
-    [P in keyof T]?: T[P] extends Array<infer U>
-      ? Array<DeepPartial<U>>
-      // tslint:disable-next-line:no-shadowed-variable
-      : T[P] extends ReadonlyArray<infer U>
-        ? ReadonlyArray<DeepPartial<U>>
-        : DeepPartial<T[P]>
-  };
+type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]>; };
 
 const getStateMember = (k: keyof ApplicationState, s: ApplicationState) => s[k];
 type StateComponent = ReturnType<typeof getStateMember>;
 
 type ActionHandler<TState extends StateComponent> =
     (state: TState, initial: TState, mutate: (newState: DeepPartial<TState>) => TState) => Partial<{
-    [K in ActionType]: (action: ActionCase<K>) => TState;
-}>;
+        [K in ActionType]: (action: ActionCase<K>) => TState;
+    }>;
 
-const merge = <T>(oldState: T) => (newProps: DeepPartial<T>) => Object.assign({}, oldState, newProps) as T;
+const merge = <T extends object>(oldState: T) => (newProps: DeepPartial<T>): T => {
+    try {
+        const merged: any = oldState;
+
+        Object.entries(newProps).forEach(
+            ([key, value]) => merged[key] = merged[key] !== undefined && merged[key] instanceof Object ? merge(merged[key])(value) : value);
+
+        return merged as T;
+    } catch (e) {
+        throw e;
+    }
+};
+
 const mutate = <TState extends StateComponent>(oldState: TState) => merge(oldState);
 
 export const deepCopy = <T>(o: T) => JSON.parse(JSON.stringify(o)) as T;

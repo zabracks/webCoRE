@@ -18,7 +18,10 @@ const defaultState: ApplicationState = {
     },
     location: {
         remoteState: None,
-    }
+    },
+    async: {
+        asyncActions: [],
+    },
 };
 
 export default defaultState;

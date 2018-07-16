@@ -4,24 +4,31 @@ import { UnionDiscriminant } from "webcore/utils";
 import api from "./api";
 import auth from "./auth";
 import ui from "./ui";
+import * as Option from "../utils/option";
+import { resolve } from "dns";
 
-const syncActionCreators = Object.assign({}, auth, ui, api);
-export const ActionCreators = Object.assign({}, syncActionCreators);
-
+export const ActionCreators = Object.assign({}, auth, ui, api);
 export type AppAction = Action.ActionUnion<typeof ActionCreators>;
 
 const getActionType = (a: AppAction) => a.type;
 export type ActionType = ReturnType<typeof getActionType>;
 export type ActionCase<T extends ActionType> = UnionDiscriminant<AppAction, "type", T>;
 
-export const match = (a: AppAction) => {
+const createMatch =  <TObj>() => <K extends keyof TObj>(key: K) => (a: TObj) => {
     const expr = {
-        with: <T extends ActionType>(t: T, cb: (action: ActionCase<T>) => void) => {
-            if (a.type === t) {
-                cb(a as ActionCase<T>);
+        match: Option.None,
+        with: (t: TObj[K], cb: (entity: UnionDiscriminant<TObj, typeof key, TObj[K]>) => void) => {
+            if (Option.isNone(expr.match) && typeof a[key] === typeof t) {
+                cb(a as UnionDiscriminant<TObj, typeof key, TObj[K]>);
+                return Object.assign(expr, { match: Option.some(t) });
             }
             return expr;
         },
     };
     return expr;
 };
+
+type AsyncAction = Action.IsAsync<AppAction>;
+
+//export const match = createMatch<AppAction>()("type");
+//export const matchAsync = createMatch<AsyncAction>()<"operation">("operation");

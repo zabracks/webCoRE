@@ -20,5 +20,5 @@ dashboard/js/components/fa*
 # Project files
 .vs/
 .vscode/
-
+dist/
 node_modules/

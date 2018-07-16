@@ -1,6 +1,7 @@
 import { Either } from "tsmonad";
 import { Option } from "webcore/utils/option";
 import * as ApiModels from "smartapp-api/models";
+import { AppAction } from "webcore/actions";
 
 export interface AuthStatus {
     token: Option<string>;
@@ -25,6 +26,10 @@ export interface UserInterfaceState {
     registration: RegistrationState;
 }
 
+export interface AsyncOrchestration {
+    asyncActions: Array<AppAction>;
+}
+
 export interface ApplicationState {
     auth: AuthStatus;
 
@@ -32,4 +37,6 @@ export interface ApplicationState {
 
     instance: InstanceState;
     location: LocationState;
+
+    async: AsyncOrchestration;
 }

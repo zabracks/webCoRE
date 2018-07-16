@@ -29,14 +29,14 @@ const mapDispatch = (dispatch: Dispatch<AppAction>) => ({
     submitCode: (code: string) =>
         dispatch(ActionCreators.registerDashboardRequest(code)),
     authenticate: (baseUrl: string, password: string) =>
-        dispatch(ActionCreators.authenticateRequest(baseUrl, password)),
+        dispatch(ActionCreators.authenticateApiRequest(baseUrl, password)),
 });
 
 class RegistrationHandler extends React.Component<ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>> {
     private readonly onClickSubmit: React.MouseEventHandler = e => {
         if (!this.props.registrationStringExists) {
             this.props.submitCode(this.props.code);
-        } else if (isSome(this.props.instanceBaseUrl) && !this.props.tokenExists) {
+        } else if (!this.props.tokenExists) {
             this.props.authenticate(get(this.props.instanceBaseUrl), this.props.password);
         }
     }
@@ -57,8 +57,8 @@ class RegistrationHandler extends React.Component<ReturnType<typeof mapState> & 
         }
 
         if (!this.props.tokenExists && this.props.password.length > 0 && this.props.hasSubmitted) {
-            if (isSome(this.props.instanceBaseUrl)) {
-                Promise.resolve(1).then(() => this.props.authenticate(get(this.props.instanceBaseUrl), this.props.password));
+            if (this.props.registrationStringExists) {
+                Promise.resolve().then(() => this.props.authenticate(get(this.props.instanceBaseUrl), this.props.password));
             }
         }
 

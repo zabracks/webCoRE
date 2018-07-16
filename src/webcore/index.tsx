@@ -42,8 +42,8 @@ const createApplicationStore = (reducerSet: Reducer<ApplicationState, AnyAction>
 export const init = (attachElement: HTMLElement) => {
     const middleware = [
         routerMiddleware(history),
-        ApiRelayMiddleware,
         ActionLogMiddleware,
+        ApiRelayMiddleware,
     ];
 
     const createdStore = createApplicationStore(reducers, applyMiddleware(...middleware));

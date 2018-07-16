@@ -1,29 +1,33 @@
 import { Dispatch, Middleware, MiddlewareAPI } from "redux";
 import * as Option from "webcore/utils/option";
 import { isNone } from "webcore/utils/option";
-import { ActionCreators, AppAction, match } from "../actions";
+import { ActionCreators, AppAction, match, matchAsync } from "../actions";
 import { ApplicationState } from "../store";
 
 import SmartappApiClient from "smartapp-api/SmartappApiClient";
 import { ApiResult, SuccessResult, ErrorResult } from "smartapp-api/results";
+import client from "smartapp-api/SmartappApiClient";
 
 interface ApiConfiguration {
     baseUrl: string;
     token: string;
 }
 
-export const ApiRelayMiddleware: Middleware =
-    (store: MiddlewareAPI<Dispatch<AppAction>, ApplicationState>) => {
-        const dispatch = (aa: AppAction) => Promise.resolve().then(_ => store.dispatch(aa));
-        let configuration: Option.Option<ApiConfiguration> = Option.None;
+let configuration: Option.Option<ApiConfiguration> = Option.None;
 
-        const ifOk = <T>(successHandler: (s: T) => any) => (res: ApiResult<T>) => {
-            if (res.type === "success") {
-                successHandler(res.data);
-            } else {
-                dispatch(ActionCreators.apiError(res));
-            }
-        };
+export const ApiRelayMiddleware: Middleware =
+    (store: MiddlewareAPI<Dispatch<any>, ApplicationState>) => {
+        const dispatch = (aa: AppAction) => Promise.resolve().then(_ => store.dispatch(aa));
+
+        function ifOk<T, U>(successHandler: (s: T) => U) {
+            return (res: ApiResult<T>) => {
+                if (res.type === "success") {
+                    successHandler(res.data);
+                } else {
+                    dispatch(ActionCreators.apiError(res));
+                }
+            };
+        }
 
         const getAuthenticatedClient = () => SmartappApiClient("").getAuthenticatedClient("", "");
         type ApiClient = ReturnType<typeof getAuthenticatedClient>;
@@ -44,7 +48,6 @@ export const ApiRelayMiddleware: Middleware =
         };
 
         return (next: Dispatch<AppAction>) => (action: AppAction) => {
-            next(action);
 
             if (isNone(configuration)) {
                 const state = store.getState();
@@ -53,28 +56,43 @@ export const ApiRelayMiddleware: Middleware =
                 }
             }
 
-            match(action)
-                .with("API/configure", a =>
-                    Promise.resolve(Option.some(a.payload))
-                        .then(cfg => configuration = cfg)
-                        .then(() => dispatch(ActionCreators.loadDashboardDataRequest())))
+            (() => {
+                switch (action.type) {
+                    case "API/configure":
+                        configuration = Option.some(action.payload);
+                        return dispatch(ActionCreators.loadDashboardDataRequest());
+                    case "ASYNC/request":
+                        const state = store.getState();
+                        if(state.async.asyncActions.find(a => a.type === "ASYNC/request" && a.operation === action.operation)) {
 
-                .with("API/request/authenticate", a =>
-                    SmartappApiClient(a.payload.baseUrl)
-                        .authenticate(a.payload.password)
-                        .then(
-                            ifOk(data => dispatch(ActionCreators.configureApi(a.payload.baseUrl, data.instance.token))
-                                            .then(() => dispatch(ActionCreators.authenticateResponse(data)))
-                                            .then(() => dispatch(ActionCreators.loadDashboardDataRequest())))))
-
-                .with("API/request/dashboard-register", a =>
-                    SmartappApiClient()
-                        .register(a.payload.registrationCode)
-                        .then(r => dispatch(ActionCreators.registerDashboardResponse(r.data))))
-
-                .with("API/request/dashboard-load", a =>
-                    getClient().then(client => client.initialLoad())
-                               .then(ifOk(data => dispatch(ActionCreators.loadDashboardDataResponse(data)))))
-                ;
+                        }
+                        return ((a: typeof action) => {
+                            switch (a.operation) {
+                                case "API/authenticate":
+                                    return SmartappApiClient(a.request.baseUrl)
+                                        .authenticate(a.request.password)
+                                        .then(
+                                            ifOk(data => {
+                                                configuration = Option.some({
+                                                    baseUrl: a.request.baseUrl,
+                                                    token: data.instance.token,
+                                                });
+                                                dispatch(a.response(data));
+                                            }));
+                                case "API/dashboard-register":
+                                    return SmartappApiClient()
+                                        .register(a.request.registrationCode)
+                                        .then(r => dispatch(a.response(r.data)));
+                                case "API/dashboard-load":
+                                    return getClient()
+                                        .then(c => c.initialLoad())
+                                        .then(ifOk(data => dispatch(a.response(data))));
+                            }
+                        })(action);
+                    default:
+                        return;
+                }
+            })();
+            return next(action);
         };
     };

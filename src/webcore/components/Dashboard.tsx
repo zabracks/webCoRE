@@ -24,7 +24,7 @@ export type IDashboardProps = ReturnType<typeof mapState> & ReturnType<typeof ma
 
 class Dashboard extends React.Component<IDashboardProps> {
     public render() {
-        if (this.props.hasInstanceUri && isNone(this.props.remoteInstance)) {
+        if (this.props.hasInstanceUri && this.props.hasToken && isNone(this.props.remoteInstance)) {
             this.props.loadDashboard();
         }
 
