@@ -2,29 +2,47 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Redirect, Route, RouteComponentProps, Switch, withRouter } from "react-router";
 import { Dispatch } from "redux";
-import { AppAction } from "../actions";
-import Dashboard from "./Dashboard";
+import { AppAction, ActionCreators } from "../actions";
+import DashboardInitializationHandler from "./DashboardInitializationHandler";
 import { ApplicationState } from "../store";
+import AppFrame from "./AppFrame";
+
+interface IApplicationProps {
+}
 
 const mapState = (state: ApplicationState) => ({
-    currentPath: window.location.pathname,
+    instance: state.instance.case === "some" ? state.instance.val : undefined,
+    isAuthenticated: state.auth.instanceUri.case === "some" && state.auth.token.case === "some",
 });
 
 const mapDispatch = (dispatch: Dispatch<AppAction>) => ({
+    doPing: () => dispatch(ActionCreators.ping()),
 });
 
-class ApplicationComponent extends React.Component<ReturnType<typeof mapState> & ReturnType<typeof mapDispatch> & RouteComponentProps<any>> {
+class ApplicationComponent extends React.Component<IApplicationProps & ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>> {
+    static timer: Promise<NodeJS.Timer>;
+
     public render() {
+        if(!ApplicationComponent.timer) {
+            ApplicationComponent.timer = 
+                Promise
+                    .resolve(this.props.doPing())
+                    .then(_ => setInterval(this.props.doPing, 60000))
+        }
+
+        if (!this.props.instance) {
+            return <DashboardInitializationHandler />
+        }
+
         return (
-            <div>
-                <Switch>
-                    <Redirect from="/" exact to="/dashboard" />
-                    <Route path="/dashboard" component={Dashboard} />
-                    <Route render={() => <h1>404</h1>} />
-                </Switch>
-            </div>
+            <Switch>
+                <Route path="/dashboard" component={DashboardInitializationHandler} />
+                <Route path="/" component={AppFrame} />
+
+                <Route render={() => <Redirect to="/" /> } />
+            </Switch>
         );
     }
 }
 
-export default withRouter(connect(mapState, mapDispatch)(ApplicationComponent));
+export const Application = connect(mapState, mapDispatch)(ApplicationComponent);

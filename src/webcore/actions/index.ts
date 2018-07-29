@@ -9,6 +9,7 @@ export const ActionCreators = Object.assign({}, auth, ui, api);
 export type AppAction = Action.ActionUnion<typeof ActionCreators>;
 
 export type AsyncAppAction = Action.IsAsync<AppAction>;
+export type RequestAction = Action.IsRequest<AppAction>;
 export type BaseAppAction = Exclude<AppAction, AsyncAppAction>;
 
 export type ActionCase<T extends ActionType> = UnionDiscriminant<AppAction, "type", T>;

@@ -8,7 +8,14 @@ interface OverlayProps {
 class Overlay extends React.Component<OverlayProps> {
     private rgbColor = Color.asRgb(this.props.color);
 
-    private readonly overlayStyle: React.CSSProperties = {
+    private readonly flexContainerStyle: React.CSSProperties = {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column",
+    }
+
+    private readonly overlayStyle: React.CSSProperties = Object.assign({}, {
         position: "fixed",
         padding: 0,
         margin: 0,
@@ -17,12 +24,28 @@ class Overlay extends React.Component<OverlayProps> {
         width: "100%",
         height: "100%",
         backgroundColor: Color.toCssColorString(this.rgbColor),
-    };
+    }, this.flexContainerStyle);
+
+    private readonly itemStyle: React.CSSProperties = Object.assign({}, this.flexContainerStyle, {
+        maxWidth: "50%",
+    } as React.CSSProperties);
+
+    private readonly preContentStyle: React.CSSProperties = Object.assign({}, this.itemStyle, {
+        alignSelf: "flex-start",
+    });
+
+    private readonly postContentStyle: React.CSSProperties = Object.assign({}, this.itemStyle, {
+        alignSelf: "flex-end",
+    });
 
     public render() {
         return (
             <div style={this.overlayStyle}>
-                {this.props.children}
+                <div style={this.preContentStyle} />
+                <div style={this.itemStyle}>
+                    {this.props.children}
+                </div>
+                <div style={this.postContentStyle} />
             </div>
         );
     }

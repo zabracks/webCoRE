@@ -1,8 +1,8 @@
 
-import * as fetchJsonp from "fetch-jsonp";
 import { ApiResult, ErrorResult, SuccessResult } from "./results";
 import { ApiErrorResult, ApplicationLoadRequest, AuthenticateRequestParams, AuthenticationApiResult, BaseApiResponse, RawResponse } from "./models";
-import * as md5 from 'md5';
+import * as fetchJsonp from "fetch-jsonp";
+import * as md5 from "md5";
 
 interface QueryStringParameter { key: string; value: string; }
 type ApiResponse<T> = Promise<ApiResult<T>>;
@@ -63,11 +63,11 @@ async function performRequest<T>(input: string, init: RequestInit, querystringPa
     return parseResponse<T>(await response.json());
 }
 
-async function performJsonp<T>(input: string, querystringParameters?: Array<QueryStringParameter>): Promise<ApiResult<T>> {
+async function performJsonp<T>(input: string, querystringParameters?: Array<QueryStringParameter>): Promise<ApiResult<T>> {    
     const response = await fetchJsonp(querystringParameters && querystringParameters.length > 0 ? `${input}?${addQuerystring(querystringParameters)}` : input, {
         timeout: 60000,
     });
-    return parseJsonpResponse<T>(await response.json());
+    return parseJsonpResponse<T>(await response.json());    
 }
 
 const getParameters = <Q>(querystringParameters: Q): Array<QueryStringParameter> => {
@@ -108,10 +108,10 @@ const client = (baseUrl?: string) => {
 
     return {
         register: (code: string) => post<string>(paths.Register(code)).then(async r => new SuccessResult({ rawResponse: await r.text() } as RawResponse)),
-        authenticate: (password: string) =>
-            jsonp<AuthenticationApiResult, AuthenticateRequestParams>(paths.Dashboard.Load, {
-                pin: md5("pin:" + password),
-            }),
+
+        authenticate: async (password: string) =>
+            jsonp<AuthenticationApiResult, AuthenticateRequestParams>(paths.Dashboard.Load, { pin: md5("pin:" + password), }),
+
         getAuthenticatedClient: (token: string, deviceVersion: string) => {
             return {
                 initialLoad: () =>

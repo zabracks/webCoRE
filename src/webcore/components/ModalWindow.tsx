@@ -1,5 +1,5 @@
 import { Dialog, DialogTitle } from "@material-ui/core";
-import React = require("react");
+import * as React from "react";
 
 export interface IButton {
 

@@ -1,5 +1,5 @@
-import "typeface-roboto";
 import * as WebCoRE from "webcore";
+import "typeface-roboto";
 
 const injectionPoint = document.getElementById("webcoreApplication");
 if (!injectionPoint) {

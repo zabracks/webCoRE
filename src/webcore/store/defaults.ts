@@ -7,15 +7,15 @@ const defaultState: ApplicationState = {
         token: None,
     },
     ui: {
+        sidebarOpen: false,
+
         registration: {
             registrationCode: "",
             password: "",
             submitted: false,
         },
     },
-    instance: {
-        remoteState: None,
-    },
+    instance: None,
     location: {
         remoteState: None,
     },

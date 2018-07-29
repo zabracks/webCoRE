@@ -1,7 +1,7 @@
-import { Either } from "tsmonad/lib/src";
 import { Option } from "../utils/option";
 import * as ApiModels from "smartapp-api/models";
-import { AppAction } from "../actions";
+import { RequestAction } from "../actions";
+import { Category, PistonListing } from '../models';
 
 export interface AuthStatus {
     token: Option<string>;
@@ -9,7 +9,8 @@ export interface AuthStatus {
 }
 
 export interface InstanceState {
-    remoteState: Option<ApiModels.Instance>;
+    categories: Array<Category>;
+    pistonsIndex: Array<PistonListing>;
 }
 
 export interface LocationState {
@@ -23,11 +24,13 @@ export interface RegistrationState {
 }
 
 export interface UserInterfaceState {
+    sidebarOpen: boolean;
+
     registration: RegistrationState;
 }
 
 export interface AsyncOrchestration {
-    asyncActions: Array<AppAction>;
+    asyncActions: Array<RequestAction>;
 }
 
 export interface ApplicationState {
@@ -35,7 +38,7 @@ export interface ApplicationState {
 
     ui: UserInterfaceState;
 
-    instance: InstanceState;
+    instance: Option<InstanceState>;
     location: LocationState;
 
     async: AsyncOrchestration;

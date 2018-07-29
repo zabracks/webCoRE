@@ -1,13 +1,8 @@
-import { Dispatch } from "redux";
-import { ApplicationState } from "../store";
-import { ActionCreators } from ".";
 
 // tslint:disable-next-line:no-namespace
 export namespace Action {
     export type ActionCreatorFunction = (...args: Array<any>) => any;
-
     export interface ActionCreatorDirectory { [actionType: string]: ActionCreatorFunction; }
-
     export type BaseActionUnion<T extends ActionCreatorDirectory> = ReturnType<T[keyof T]>;
 
     // tslint:disable-next-line:no-shadowed-variable
@@ -19,17 +14,13 @@ export namespace Action {
         payload: TPayload;
     }
 
-    // export interface ResponseAction<TRequest extends Action<any>, TResponse> extends PayloadAction<"ASYNC/response", TResponse> {
-    //     request: TRequest;
-    //     operation: TRequest["type"];
-    // }
-
     export function create<TActionType extends string>(type: TActionType): Action<TActionType>;
     export function create<TActionType extends string, TPayload>(type: TActionType, payload: TPayload): PayloadAction<TActionType, TPayload>;
     export function create<TActionType extends string, TPayload>(type: TActionType, payload?: TPayload) {
         return { type, payload };
     }
 
+    // Async actions wiring
     export interface ResponseAction<TT extends string, TP, TReq extends PayloadAction<TT, TP>, TRes> {
         type: "ASYNC/response";
         operation: TT;
@@ -65,17 +56,10 @@ export namespace Action {
             }),
         });
 
-    const a = {
-        doRegThing: (c: string) => create("regular", {c}),
-        // doThing: (b: string) => bindAsync<{ x: number }>(create("sup", { a: b })),
-    };
-    type TestAction = BaseActionUnion<typeof a>;
     export type IsRequest<T> = T extends RequestAction<infer TT, infer TP, infer TReq, infer TRes> ? RequestAction<TT, TP, TReq, TRes> : never;
     export type IsResponse<T> = T extends IsRequest<T> ? ReturnType<T["response"]> : never;
     export type IsAsync<T> = IsRequest<T> | IsResponse<T>;
     export type ActionUnion<T extends ActionCreatorDirectory> =
         | BaseActionUnion<T>
         | IsResponse<BaseActionUnion<T>>;
-
-    type testRequests = ActionUnion<typeof a>;
 }

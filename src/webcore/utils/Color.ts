@@ -1,4 +1,4 @@
-import { RgbColor, HslColor, HsvColor, hslToRgb, hsvToRgb, rgbLinearize, formatRgbToString } from "inkdrop";
+import { RgbColor, HslColor, HsvColor, hslToRgb, hsvToRgb, rgbLinearize, formatRgbToString, hexToRgb } from "inkdrop";
 
 export type Color =
     | RgbColor
@@ -19,6 +19,8 @@ function isHsv(c: Color): c is HsvColor {
     const color = c as HsvColor;
     return color && color.alpha !== undefined && color.h !== undefined && color.s !== undefined && color.v !== undefined;
 }
+
+export const fromHex = (s: string) => hexToRgb((s.length % 2 ? s.slice(1) : s));
 
 export const asRgb = (color: Color): RgbColor => {
     if (isRgb(color)) {

@@ -1,6 +1,6 @@
 import { ActionCase, AsyncActionType, AppAction, BaseActionType, AsyncActionCase, AsyncOperationType, ActionType } from "../actions";
 import { ApplicationState } from "../store";
-import deepmerge = require("deepmerge");
+import * as deepmerge from "deepmerge";
 
 type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]>; };
 const getStateMember = (k: keyof ApplicationState, s: ApplicationState) => s[k];

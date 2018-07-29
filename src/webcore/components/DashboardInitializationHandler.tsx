@@ -10,10 +10,10 @@ import { isNone, isSome } from "../utils/option";
 import LoadingOverlay from "./LoadingOverlay";
 
 const mapState = (state: ApplicationState) => ({
-    hasInstanceUri: isSome(state.auth.instanceUri),
-    hasToken: isSome(state.auth.token),
+    hasInstanceUri: state.auth.instanceUri.case === "some",
+    hasToken: state.auth.token.case === "some",
 
-    remoteInstance: state.instance.remoteState,
+    hasRemoteInstance: state.instance.case === "some",
 });
 
 const mapDispatch = (dispatch: Dispatch<AppAction>) => ({
@@ -22,31 +22,23 @@ const mapDispatch = (dispatch: Dispatch<AppAction>) => ({
 
 export type IDashboardProps = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch> & RouteComponentProps<any>;
 
-class Dashboard extends React.Component<IDashboardProps> {
+class DashboardInitializationHandler extends React.Component<IDashboardProps> {
     public render() {
-        if (this.props.hasInstanceUri && this.props.hasToken && isNone(this.props.remoteInstance)) {
+        if (this.props.hasInstanceUri && this.props.hasToken && !this.props.hasRemoteInstance) {
             this.props.loadDashboard();
         }
 
         return (
             <Switch>
-                <Route path={this.props.match.url + "/register"} component={RegistrationHandler} />
+                <Route path={"/dashboard/register"} component={RegistrationHandler} />
                 {
                     !this.props.hasInstanceUri
-                        ? <Redirect to="/dashboard/register" />
-                        : <Route path="/">
-                            {
-                                isNone(this.props.remoteInstance) ? <LoadingOverlay /> :
-                                <div>
-                                    Dashboard
-                                </div>
-                            }
-                          </Route>
+                        ? <Redirect push to="/dashboard/register" />
+                        : !this.props.hasRemoteInstance ? <LoadingOverlay /> : <Redirect to="/" from="/dashboard" exact />
                 }
-
             </Switch>
         );
     }
 }
 
-export default withRouter(connect(mapState, mapDispatch)(Dashboard));
+export default withRouter(connect(mapState, mapDispatch)(DashboardInitializationHandler));

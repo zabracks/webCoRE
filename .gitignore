@@ -22,3 +22,4 @@ dashboard/js/components/fa*
 .vscode/
 dist/
 node_modules/
+.awcache

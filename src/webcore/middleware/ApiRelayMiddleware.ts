@@ -14,6 +14,7 @@ interface ApiConfiguration {
 }
 
 let configuration: Option.Option<ApiConfiguration> = Option.None;
+let hasDoneInitialLoad: boolean = false;
 
 export const ApiRelayMiddleware: Middleware =
     (store: MiddlewareAPI<Dispatch<any>, ApplicationState>) => {
@@ -53,6 +54,8 @@ export const ApiRelayMiddleware: Middleware =
                 const state = store.getState();
                 if (Option.isSome(state.auth.instanceUri) && Option.isSome(state.auth.token)) {
                     configuration = Option.some({ baseUrl: state.auth.instanceUri.val, token: state.auth.token.val });
+                    dispatch(ActionCreators.loadDashboardDataRequest())
+                        .then(() => setInterval(() => dispatch(ActionCreators.loadDashboardDataRequest()), 30000))
                 }
             }
 
@@ -62,32 +65,38 @@ export const ApiRelayMiddleware: Middleware =
                         configuration = Option.some(action.payload);
                         return dispatch(ActionCreators.loadDashboardDataRequest());
                     case "ASYNC/request":
-                        const state = store.getState();
-                        if(state.async.asyncActions.find(a => a.type === "ASYNC/request" && a.operation === action.operation)) {
-
-                        }
-                        return ((a: typeof action) => {
-                            switch (a.operation) {
-                                case "API/authenticate":
-                                    return SmartappApiClient(a.request.baseUrl)
-                                        .authenticate(a.request.password)
-                                        .then(
-                                            ifOk(data => {
-                                                configuration = Option.some({
-                                                    baseUrl: a.request.baseUrl,
-                                                    token: data.instance.token,
-                                                });
-                                                dispatch(a.response(data));
-                                            }));
-                                case "API/dashboard-register":
-                                    return SmartappApiClient()
-                                        .register(a.request.registrationCode)
-                                        .then(r => dispatch(a.response(r.data)));
-                                case "API/dashboard-load":
-                                    return getClient()
-                                        .then(c => c.initialLoad())
-                                        .then(ifOk(data => dispatch(a.response(data))));
+                        return (() => {
+                            const state = store.getState();
+                            if (state.async.asyncActions.find(a => a.type === "ASYNC/request" && a.operation === action.operation)) {
+                                return;
                             }
+                            return (a => {
+                                switch (a.operation) {
+                                    case "API/authenticate":
+                                        return SmartappApiClient(a.request.baseUrl)
+                                            .authenticate(a.request.password)
+                                            .then(
+                                                ifOk(data => {
+                                                    configuration = Option.some({
+                                                        baseUrl: a.request.baseUrl,
+                                                        token: data.instance.token,
+                                                    });
+                                                    dispatch(a.response(data));
+                                                }));
+                                    case "API/dashboard-register":
+                                        return SmartappApiClient()
+                                            .register(a.request.registrationCode)
+                                            .then(r => dispatch(a.response(r.data)));
+                                    case "API/dashboard-load":
+                                        return getClient()
+                                            .then(c => c.initialLoad())
+                                            .then(ifOk(data => dispatch(a.response(data))));
+                                }
+                            })(action);
+                        })();
+                    case "ASYNC/response":
+                        return (a => {
+
                         })(action);
                     default:
                         return;
