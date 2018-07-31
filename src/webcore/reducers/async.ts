@@ -8,6 +8,6 @@ export default reduce(defaults.async, (state, init, mutate) => ({
                 : state.asyncActions.concat([a]),
     }),
     "ASYNC/response": a => ({
-        asyncActions: state.asyncActions.filter(asyncAction => asyncAction.operation != a.operation),
-    })
+        asyncActions: state.asyncActions.filter(asyncAction => asyncAction.operation !== a.operation),
+    }),
 }));

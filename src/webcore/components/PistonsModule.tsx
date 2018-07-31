@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Switch, Route } from 'react-router';
+import { Switch, Route } from "react-router";
 import { PistonList } from "webcore/components/PistonList";
 
 export class PistonsModule extends React.Component {

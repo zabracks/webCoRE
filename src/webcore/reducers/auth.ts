@@ -14,19 +14,19 @@ export default reduce(defaults.auth, (state, init, mutate) => ({
                 case "API/dashboard-register":
                     return (l => l >= 80 && l <= 180)(action.response.rawResponse.length)
                                 ? some(extractInstanceUri(atou(action.response.rawResponse)))
-                                : None
-                
+                                : None;
+
                 default:
                     return state.instanceUri;
             }
         })(),
         token: (() => {
-            switch(action.operation) {
+            switch (action.operation) {
                 case "API/authenticate":
                     return some(action.response.instance.token);
                 default:
                     return state.token;
             }
-        })()
+        })(),
     }),
 }));

@@ -1,15 +1,15 @@
 import * as React from "react";
-import { List, createStyles, Theme, WithStyles, withStyles, ListSubheader
-} from '@material-ui/core';
-import { connect } from 'react-redux';
+import { List, createStyles, Theme, WithStyles, withStyles, ListSubheader,
+} from "@material-ui/core";
+import { connect } from "react-redux";
 import {PistonListItem} from "webcore/components/PistonListItem";
 
-class PistonListItemCategory extends React.Component<{ category: import("webcore/models").Category; pistons: import("webcore/models").PistonListing[] }> {
+class PistonListItemCategory extends React.Component<{ category: import ("webcore/models").Category; pistons: Array<import ("webcore/models").PistonListing> }> {
     private readonly liStyle = {
-        backgroundColor: 'inherit',
+        backgroundColor: "inherit",
     };
     private readonly ulStyle = {
-        backgroundColor: 'inherit',
+        backgroundColor: "inherit",
         padding: 0,
     };
 
@@ -18,8 +18,8 @@ class PistonListItemCategory extends React.Component<{ category: import("webcore
             <li key={this.props.category.categoryId} style={this.liStyle}>
                 <ul style={this.ulStyle}>
                     <ListSubheader>{this.props.category.name}</ListSubheader>
-                    {this.props.pistons.map(p => 
-                        <PistonListItem key={p.pistonId} piston={p} />
+                    {this.props.pistons.map(p =>
+                        <PistonListItem key={p.pistonId} piston={p} />,
                     )}
                 </ul>
             </li>
@@ -27,21 +27,21 @@ class PistonListItemCategory extends React.Component<{ category: import("webcore
     }
 }
 
-const mapState = (state: import("../store").ApplicationState) => ({
+const mapState = (state: import ("../store").ApplicationState) => ({
     categories: state.instance.case === "some" ? state.instance.val.categories : [],
     pistons: state.instance.case === "some" ? state.instance.val.pistonsIndex : [],
 });
 
-const mapDispatch = (dispatch: import("redux").Dispatch<import("../actions").AppAction>) => ({
+const mapDispatch = (dispatch: import ("redux").Dispatch<import ("../actions").AppAction>) => ({
 
-})
+});
 
 const pistonListStyles = (theme: Theme) => createStyles({
     root: {
-        width: '100%',
+        width: "100%",
         backgroundColor: theme.palette.background.paper,
-        position: 'relative',
-        overflow: 'auto',
+        position: "relative",
+        overflow: "auto",
     },
 });
 
@@ -53,7 +53,7 @@ class PistonListComponent extends React.Component<ReturnType<typeof mapState> & 
             hidden: false,
             details: true,
         },
-    }
+    };
 
     private static readonly inactiveCategory = {
         categoryId: -2,
@@ -61,8 +61,8 @@ class PistonListComponent extends React.Component<ReturnType<typeof mapState> & 
         display: {
             hidden: false,
             details: true,
-        }
-    }
+        },
+    };
 
     public render() {
         const activePistons = this.props.pistons.filter(p => p.metadata.active);
@@ -77,7 +77,7 @@ class PistonListComponent extends React.Component<ReturnType<typeof mapState> & 
                             category={category}
                             pistons={ activePistons.filter(p => p.categoryId === category.categoryId) } /> )
                 }
-                <PistonListItemCategory key="uncategorized" 
+                <PistonListItemCategory key="uncategorized"
                                         category={PistonListComponent.uncategorizedCategory}
                                         pistons={activePistons.filter(p => !p.categoryId)} />
                 <PistonListItemCategory key="inactive"

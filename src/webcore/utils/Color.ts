@@ -37,4 +37,4 @@ export const asRgb = (color: Color): RgbColor => {
 export const toCssColorString = (color: Color): string => {
     const c = asRgb(color);
     return formatRgbToString(c);
-}
+};

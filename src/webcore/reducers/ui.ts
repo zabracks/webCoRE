@@ -18,5 +18,5 @@ export default reduce(defaults.ui, (state, init, mutate, doMerge) => {
                 password: action.payload.password,
             },
         }),
-    })
+    });
 });

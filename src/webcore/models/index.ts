@@ -15,7 +15,7 @@ export interface PistonListing {
     categoryId?: number;
 }
 
-export interface Category {    
+export interface Category {
     categoryId: number;
     display: {
         tileSize?: "tile" | "medium" | "large";

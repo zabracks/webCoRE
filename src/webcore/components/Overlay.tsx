@@ -6,14 +6,14 @@ interface OverlayProps {
 }
 
 class Overlay extends React.Component<OverlayProps> {
-    private rgbColor = Color.asRgb(this.props.color);
+    private readonly rgbColor = Color.asRgb(this.props.color);
 
     private readonly flexContainerStyle: React.CSSProperties = {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
-    }
+    };
 
     private readonly overlayStyle: React.CSSProperties = Object.assign({}, {
         position: "fixed",

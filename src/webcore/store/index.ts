@@ -1,7 +1,7 @@
 import { Option } from "../utils/option";
 import * as ApiModels from "smartapp-api/models";
 import { RequestAction } from "../actions";
-import { Category, PistonListing } from '../models';
+import { Category, PistonListing } from "../models";
 
 export interface AuthStatus {
     token: Option<string>;

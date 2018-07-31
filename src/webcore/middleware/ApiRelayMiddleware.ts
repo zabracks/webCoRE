@@ -1,4 +1,4 @@
-import { Dispatch, Middleware, MiddlewareAPI } from "redux";
+import { Dispatch, Middleware, MiddlewareAPI, AnyAction } from "redux";
 import * as Option from "../utils/option";
 import { isNone } from "../utils/option";
 import { ActionCreators, AppAction } from "../actions";
@@ -14,10 +14,10 @@ interface ApiConfiguration {
 }
 
 let configuration: Option.Option<ApiConfiguration> = Option.None;
-let hasDoneInitialLoad: boolean = false;
+const hasDoneInitialLoad: boolean = false;
 
 export const ApiRelayMiddleware: Middleware =
-    (store: MiddlewareAPI<Dispatch<any>, ApplicationState>) => {
+    (store: MiddlewareAPI<Dispatch<AnyAction>, ApplicationState>) => {
         const dispatch = (aa: AppAction) => Promise.resolve().then(_ => store.dispatch(aa));
 
         function ifOk<T, U>(successHandler: (s: T) => U) {
@@ -48,14 +48,14 @@ export const ApiRelayMiddleware: Middleware =
             }
         };
 
-        return (next: Dispatch<AppAction>) => (action: AppAction) => {
+        return (next: Dispatch<AnyAction>) => (action: AppAction) => {
 
             if (isNone(configuration)) {
                 const state = store.getState();
                 if (Option.isSome(state.auth.instanceUri) && Option.isSome(state.auth.token)) {
                     configuration = Option.some({ baseUrl: state.auth.instanceUri.val, token: state.auth.token.val });
                     dispatch(ActionCreators.loadDashboardDataRequest())
-                        .then(() => setInterval(() => dispatch(ActionCreators.loadDashboardDataRequest()), 30000))
+                        .then(() => setInterval(() => dispatch(ActionCreators.loadDashboardDataRequest()), 30000));
                 }
             }
 
@@ -91,12 +91,14 @@ export const ApiRelayMiddleware: Middleware =
                                         return getClient()
                                             .then(c => c.initialLoad())
                                             .then(ifOk(data => dispatch(a.response(data))));
+                                    default:
+                                        return;
                                 }
                             })(action);
                         })();
                     case "ASYNC/response":
                         return (a => {
-
+                            return;
                         })(action);
                     default:
                         return;

@@ -13,7 +13,7 @@ const apiActions = {
         Action.bindAsync<BaseApiResponse>()(Action.create("API/dashboard-load", {})),
 };
 
-export type ApiAction = Action.ActionUnion<typeof apiActions>;
+type ApiAction = Action.ActionUnion<typeof apiActions>;
 
 const actions = Object.assign({}, apiActions, {
     apiError: (error: ErrorResult) => Action.create("API/error", { error }),

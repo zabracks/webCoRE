@@ -1,7 +1,7 @@
 import * as React from "react";
 
 interface LogoProps {
-    maxWidth?: React.CSSProperties["maxWidth"],
+    maxWidth?: React.CSSProperties["maxWidth"];
 }
 
 export class WebcoreLogo extends React.Component<LogoProps> {

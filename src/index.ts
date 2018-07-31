@@ -1,5 +1,7 @@
-import * as WebCoRE from "webcore";
+// tslint:disable-next-line:no-import-side-effect
 import "typeface-roboto";
+
+import * as WebCoRE from "webcore";
 
 const injectionPoint = document.getElementById("webcoreApplication");
 if (!injectionPoint) {

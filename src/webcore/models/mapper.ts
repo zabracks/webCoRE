@@ -1,13 +1,13 @@
-import { mapModel } from 'smartapp-api/ModelMapper';
+import { mapModel } from "smartapp-api/ModelMapper";
 import * as Remote from "smartapp-api/models";
-import { Category, PistonListing } from '.';
-import { None, some } from '../utils/option';
+import { Category, PistonListing } from ".";
+import { None, some } from "../utils/option";
 
 export const mappers = {
     piston: mapModel((remote: Remote.PistonListing): PistonListing => ({
         name: remote.name,
         pistonId: remote.id,
-        categoryId: remote.meta && remote.meta.c ? parseInt(remote.meta.c) : undefined,
+        categoryId: remote.meta && remote.meta.c ? parseInt(remote.meta.c, 10) : undefined,
         metadata: remote.meta ? {
             active: remote.meta.a,
             lastExecuted: remote.meta.t ? some(remote.meta.t) : None,
@@ -20,7 +20,7 @@ export const mappers = {
             nextScheduled: None,
             statusText: None,
             automaticStatus: None,
-        }
+        },
     }), local => ({
         name: local.name,
         id: local.pistonId,
@@ -32,8 +32,8 @@ export const mappers = {
 
             },
             c: local.categoryId ? local.categoryId.toString() : null,
-            z: ""
-        }
+            z: "",
+        },
     })),
     category: mapModel(
         (remote: Remote.Category): Category => ({
@@ -41,16 +41,15 @@ export const mappers = {
             name: remote.n,
             display: {
                 tileSize: (t => {
-                    if(t.startsWith("t")) return "tile";
-                    if(t.startsWith("m")) return "medium";
-                    if(t.startsWith("l")) return "large";
+                    if (t.startsWith("t")) { return "tile"; }
+                    if (t.startsWith("m")) { return "medium"; }
+                    if (t.startsWith("l")) { return "large"; }
                     return undefined;
                 })(remote.t),
                 details: remote.t.includes("d"),
                 hidden: remote.t.includes("h"),
-            }
-        }),
-        (local) => ({
+            },
+        }), local => ({
                 t: (local.display.tileSize ? local.display.tileSize[0] : "") + (local.display.details ? "d" : "") + (local.display.hidden ? "h" : ""),
                 n: local.name,
                 i: local.categoryId,

@@ -1,6 +1,6 @@
 import CssBaseline from "@material-ui/core/CssBaseline";
 import {
-    //ConnectedRouter as Router, connectRouter,
+    // ConnectedRouter as Router, connectRouter,
 } from "connected-react-router";
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
@@ -14,7 +14,7 @@ import { reducers } from "./reducers";
 import { ApplicationState } from "./store";
 import LoadingOverlay from "./components/LoadingOverlay";
 
-const createApplicationStore = (reducerSet: import("redux").Reducer<ApplicationState, import("redux").AnyAction>, middlewares: import("redux").StoreEnhancer) => {
+const createApplicationStore = (reducerSet: import ("redux").Reducer<ApplicationState, import ("redux").AnyAction>, middlewares: import ("redux").StoreEnhancer) => {
     const persistConfig: Persist.PersistConfig = {
         key: "webcore",
         storage,
@@ -36,7 +36,7 @@ export const init = async (attachElement: HTMLElement) => {
     const initialLocationData = Object.assign({}, window.location);
 
     const middleware = [
-        //routerMiddleware(history),
+        // routerMiddleware(history),
         ActionLogMiddleware,
         ApiRelayMiddleware,
     ];
@@ -45,7 +45,7 @@ export const init = async (attachElement: HTMLElement) => {
 
     const Application = (await import("webcore/components/Application")).Application;
     const PersistGate = (await import("redux-persist/integration/react")).PersistGate;
-    const React = await import("react")
+    const React = await import("react");
     const ReactDOM = await import("react-dom");
 
     const { MuiThemeProvider } = await import("@material-ui/core/styles");

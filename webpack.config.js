@@ -1,6 +1,11 @@
 ﻿const DEBUG = process.env.NODE_ENV === 'development';
 
 const webpack = require("webpack");
+const DashboardPlugin = require('webpack-dashboard/plugin');
+var HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const ForkTsCheckerNotifierWebpackPlugin = require('fork-ts-checker-notifier-webpack-plugin');
 
 const path = require("path");
 const resolve = path.resolve;
@@ -28,21 +33,24 @@ const DEV_SERVER = {
     publicPath: '/',
     historyApiFallback: true
 
-// match the output `publicPath`
+    // match the output `publicPath`
 };
 
 module.exports = {
     mode: "development",
+    stats: { children: false },
     devtool: DEBUG ? 'inline-source-map' : undefined,
     devServer: DEV_SERVER,
     resolve: {
         extensions: [
-            '.webpack.js', '.web.js',
             '.ts', '.tsx',
             '.js',
-            ".json"
         ],
-        alias: {},
+        alias: {
+            'babel-core': path.resolve(
+                path.join(__dirname, './node_modules/@babel/core'),
+            ),
+        },
         plugins: [
             new TsConfigPathsPlugin(),
         ],
@@ -71,17 +79,29 @@ module.exports = {
                     {
                         loader: 'awesome-typescript-loader',
                         options: {
-                            getCustomTransformers: () => ({
-                                before: [
-                                    tsImportPluginFactory({
-                                        libraryName: "material-ui",
-                                        libraryDirectory: "",
-                                        camel2DashComponentName: false,
-                                    })
+                            useCache: true,
+                            isolatedModules: true,
+                            transpileOnly: true,
+                            useBabel: true,
+                            babelOptions: {
+                                babelrc: false,
+                                presets: [
+                                    ["@babel/preset-react"],
+                                    ["@babel/preset-env", {
+                                        "targets": {
+                                            "node": "current"
+                                        }
+                                    }]
+                                ],
+                                plugins: [
+                                    "@babel/plugin-syntax-typescript",
+                                    "@babel/plugin-syntax-dynamic-import",
+                                    'react-hot-loader/babel'
                                 ]
-                            })
-                        }},
-                ],
+                            },
+                            babelCore: "@babel/core"
+                        }
+                    }],
                 exclude: [resolve(__dirname, "node_modules")],
             },
             {
@@ -94,25 +114,23 @@ module.exports = {
             },
             {
                 test: /\.svg/,
-                use: {
-                    //loader: 'svg-url-loader',
+                use: [{
                     loader: "url-loader",
                     options: {
+                        limit: 8000, // Convert images < 8kb to base64 strings
                         name: 'static/[hash]-[name].[ext]',
                     }
-                }
+                }]
             },
             {
                 test: /\.(svg|png|jpg|gif)$/,
-                use: [
-                    {
-                        loader: 'url-loader',
-                        options: {
-                            limit: 8000, // Convert images < 8kb to base64 strings
-                            name: 'static/[hash]-[name].[ext]',
-                        }
+                use: [{
+                    loader: "url-loader",
+                    options: {
+                        limit: 8000, // Convert images < 8kb to base64 strings
+                        name: 'static/[hash]-[name].[ext]',
                     }
-                ]
+                }]
             },
             {
                 test: /\.woff2?$|\.ttf$|\.eot$/,
@@ -135,6 +153,17 @@ module.exports = {
     },
 
     plugins: [
+        new ForkTsCheckerWebpackPlugin({
+            checkSyntacticErrors: true,
+
+            tslint: resolve(__dirname, "tslint.json"),
+            watch: ["src"],
+            tsconfig: resolve(__dirname, "tsconfig.json")
+        }),
+        new ForkTsCheckerNotifierWebpackPlugin({ excludeWarnings: true }),
+
+        new HardSourceWebpackPlugin(),
+        
         new webpack.DefinePlugin({
             VERSION: JSON.stringify(require("./package.json").version),
             DEBUG
@@ -146,23 +175,24 @@ module.exports = {
             }),
             new webpack.NamedModulesPlugin(),
         ] : [
-            new webpack.LoaderOptionsPlugin({
-                minimize: true,
-                debug: false
-            }),
-            new webpack.optimize.UglifyJsPlugin({
-                beautify: false,
-                compress: {
-                    screw_ie8: true
-                },
-                comments: false,
-                sourceMap: isSourceMap,
-            }),
-        ]),
+                new webpack.LoaderOptionsPlugin({
+                    minimize: true,
+                    debug: false
+                }),
+                new webpack.optimize.UglifyJsPlugin({
+                    beautify: false,
+                    compress: {
+                        screw_ie8: true
+                    },
+                    comments: false,
+                    sourceMap: isSourceMap,
+                }),
+            ]),
         new HtmlWebpackPlugin({
             template: './index.html',
             filename: 'index.html'
         }),
         new WebpackCleanupPlugin(),
+        new DashboardPlugin(),
     ],
 };

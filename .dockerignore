@@ -1,8 +1,11 @@
 .git/
 .vs/
+.vscode/
+.awcache/
 node_modules/
 devicetypes/
 legacy/
 resources/
 smartapps/
 src/
+dist/

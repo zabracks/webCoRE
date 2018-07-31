@@ -63,11 +63,11 @@ async function performRequest<T>(input: string, init: RequestInit, querystringPa
     return parseResponse<T>(await response.json());
 }
 
-async function performJsonp<T>(input: string, querystringParameters?: Array<QueryStringParameter>): Promise<ApiResult<T>> {    
+async function performJsonp<T>(input: string, querystringParameters?: Array<QueryStringParameter>): Promise<ApiResult<T>> {
     const response = await fetchJsonp(querystringParameters && querystringParameters.length > 0 ? `${input}?${addQuerystring(querystringParameters)}` : input, {
         timeout: 60000,
     });
-    return parseJsonpResponse<T>(await response.json());    
+    return parseJsonpResponse<T>(await response.json());
 }
 
 const getParameters = <Q>(querystringParameters: Q): Array<QueryStringParameter> => {
@@ -110,7 +110,7 @@ const client = (baseUrl?: string) => {
         register: (code: string) => post<string>(paths.Register(code)).then(async r => new SuccessResult({ rawResponse: await r.text() } as RawResponse)),
 
         authenticate: async (password: string) =>
-            jsonp<AuthenticationApiResult, AuthenticateRequestParams>(paths.Dashboard.Load, { pin: md5("pin:" + password), }),
+            jsonp<AuthenticationApiResult, AuthenticateRequestParams>(paths.Dashboard.Load, { pin: md5("pin:" + password) }),
 
         getAuthenticatedClient: (token: string, deviceVersion: string) => {
             return {

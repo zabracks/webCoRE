@@ -1,20 +1,17 @@
 import * as React from "react";
 import Overlay from "./Overlay";
 import { withStyles, Typography, Paper, withTheme } from "@material-ui/core";
-import { WebcoreLogo } from './WebcoreLogo';
-import * as Color from '../utils/Color';
-import { LoadingSpinner } from './LoadingSpinner';
-
+import { WebcoreLogo } from "./WebcoreLogo";
+import * as Color from "../utils/Color";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 const loadingOverlayStyles = {};
-class LoadingOverlay extends React.Component<import("@material-ui/core").WithStyles<typeof loadingOverlayStyles> & import("@material-ui/core").WithTheme> {
-    private readonly alpha = 1
+class LoadingOverlay extends React.Component<import ("@material-ui/core").WithStyles<typeof loadingOverlayStyles> & import ("@material-ui/core").WithTheme> {
+    private readonly alpha = 1;
 
-    private backgroundColor: Color.Color = Color.fromHex(this.props.theme.palette.background.default);
+    private readonly backgroundColor: Color.Color = Color.fromHex(this.props.theme.palette.background.default);
 
     public render() {
-        console.log(this.props.theme);
-
         return (
             <Overlay color={this.backgroundColor}>
                 <WebcoreLogo />

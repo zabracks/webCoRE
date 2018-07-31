@@ -12,12 +12,12 @@ export interface MainMenuItemProps {
 export class MainMenuItem extends React.Component<MainMenuItemProps> {
     public render() {
         return (
-            <Link to={this.props.linkTo} style={{ textDecoration: 'none' }}>
+            <Link to={this.props.linkTo} style={{ textDecoration: "none" }}>
                 <ListItem button>
                     <ListItemIcon>
                         <this.props.icon />
                     </ListItemIcon>
-                    <ListItemText primary="Pistons" />
+                    <ListItemText primary={this.props.text} />
                 </ListItem>
             </Link>
         );

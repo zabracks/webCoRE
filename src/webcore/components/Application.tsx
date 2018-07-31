@@ -6,9 +6,9 @@ import { AppAction, ActionCreators } from "../actions";
 import DashboardInitializationHandler from "./DashboardInitializationHandler";
 import { ApplicationState } from "../store";
 import AppFrame from "./AppFrame";
+import { hot } from "react-hot-loader";
 
-interface IApplicationProps {
-}
+interface IApplicationProps {}
 
 const mapState = (state: ApplicationState) => ({
     instance: state.instance.case === "some" ? state.instance.val : undefined,
@@ -20,18 +20,18 @@ const mapDispatch = (dispatch: Dispatch<AppAction>) => ({
 });
 
 class ApplicationComponent extends React.Component<IApplicationProps & ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>> {
-    static timer: Promise<NodeJS.Timer>;
+    public static timer: Promise<NodeJS.Timer>;
 
     public render() {
-        if(!ApplicationComponent.timer) {
-            ApplicationComponent.timer = 
+        if (!ApplicationComponent.timer) {
+            ApplicationComponent.timer =
                 Promise
                     .resolve(this.props.doPing())
-                    .then(_ => setInterval(this.props.doPing, 60000))
+                    .then(_ => setInterval(this.props.doPing, 60000));
         }
 
         if (!this.props.instance) {
-            return <DashboardInitializationHandler />
+            return <DashboardInitializationHandler />;
         }
 
         return (
@@ -45,4 +45,4 @@ class ApplicationComponent extends React.Component<IApplicationProps & ReturnTyp
     }
 }
 
-export const Application = connect(mapState, mapDispatch)(ApplicationComponent);
+export const Application = hot(module)(connect(mapState, mapDispatch)(ApplicationComponent));

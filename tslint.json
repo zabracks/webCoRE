@@ -3,6 +3,7 @@
     "extends": [
         "tslint:recommended"
     ],
+    
     "jsRules": {},
     "rules": {
         "no-import-side-effect": true,
@@ -34,6 +35,13 @@
         "max-line-length": false,
         "object-literal-sort-keys": false,
         "object-literal-key-quotes": false,
+        "no-empty-interface": false,
+        "max-classes-per-file": false
     },
-    "rulesDirectory": []
+    "rulesDirectory": [],
+    "linterOptions": {
+        "exclude": [
+            "dist"
+        ]
+    }
 }
